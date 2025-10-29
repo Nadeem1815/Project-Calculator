@@ -22,3 +22,5 @@ func StringToFloats(strings []string) ([]float64, error) {
 	return floats, nil
 
 }
+
+
