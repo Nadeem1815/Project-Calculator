@@ -36,11 +36,14 @@ func (job *TaxIncludeJob) LoadData() error {
 
 }
 
-func (job *TaxIncludeJob) Process() error {
+func (job *TaxIncludeJob) Process(donchans chan bool, errorChan chan error) {
 	err := job.LoadData()
 
+	// errorChan <- errors.New("an error")
 	if err != nil {
-		return err
+		// return err
+		errorChan <- err
+		return
 	}
 
 	result := make(map[string]string)
@@ -53,7 +56,8 @@ func (job *TaxIncludeJob) Process() error {
 	}
 	// fmt.Println(result)
 	job.TaxIncludedPrices = result
-	return job.IOManager.WriteResult(job)
+	job.IOManager.WriteResult(job)
+	donchans <- true
 
 }
 

@@ -5,15 +5,15 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"time"
 )
 
-type FileManager struct{
-	InputFilePath string
+type FileManager struct {
+	InputFilePath  string
 	OutputFilePath string
 }
 
-
-func (fm FileManager)ReadLines() ([]string, error) {
+func (fm FileManager) ReadLines() ([]string, error) {
 	file, err := os.Open(fm.InputFilePath)
 	if err != nil {
 		return nil, errors.New("failed to open file")
@@ -38,30 +38,30 @@ func (fm FileManager)ReadLines() ([]string, error) {
 	return lines, nil
 }
 
+func (fm FileManager) WriteResult(data interface{}) error {
+	file, err := os.Create(fm.OutputFilePath)
 
-func (fm FileManager)WriteResult(data interface{})error{
-	file,err:=os.Create(fm.OutputFilePath)
-
-	if err!=nil {
+	if err != nil {
 		return errors.New("failed to create file")
 	}
 
-	encoder:=json.NewEncoder(file)
+	time.Sleep(3 * time.Second)
+
+	encoder := json.NewEncoder(file)
 	err = encoder.Encode(data)
 
-	if err!=nil {
+	if err != nil {
 		file.Close()
 		return errors.New("failed to convert data to  json")
 	}
 	file.Close()
 
-	return nil 
+	return nil
 }
 
-
-func New(inputPath string,outPath string)FileManager {
+func New(inputPath string, outPath string) FileManager {
 	return FileManager{
-		InputFilePath: inputPath,
+		InputFilePath:  inputPath,
 		OutputFilePath: outPath,
 	}
 }
